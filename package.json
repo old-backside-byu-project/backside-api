@@ -1,0 +1,29 @@
+{
+    "name": "backside-api",
+    "version": "0.0.0",
+    "description": "The api for backside",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha test/**/*.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/backside/backside-api.git"
+    },
+    "keywords": [
+        "backside",
+        "stomp"
+    ],
+    "author": "addisonj",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/backside/backside-api/issues"
+    },
+    "dependencies": {
+        "dependable": "~0.2.5",
+        "winston": "~0.7.3"
+    },
+    "devDependencies": {
+        "mocha": "*"
+    }
+}
