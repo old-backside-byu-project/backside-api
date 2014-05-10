@@ -1,14 +1,15 @@
 var mongoose = require("mongoose")
-var Mixed = mongoose.schema.Types.Mixed
+var Mixed = mongoose.Schema.Types.Mixed
 var treeUtils = require("../lib/treeUtils")
+var async = require("async")
 
 module.exports = function() {
   var PersistorSchema = new mongoose.Schema({
     name: "string", // "databases"
     path: ["string"], // ["/books", "/books/programming", "/books/programming/databases"]
     parentPath: "string",  // "/books/programming"
-    ".priority": Mixed,
-    ".value": Mixed
+    priority: Mixed,
+    value: Mixed
   })
 
   /*
@@ -22,7 +23,7 @@ module.exports = function() {
       ".values" {
         "beep": 1,
         "boop": 2
-      } 
+      }
     }
     // option 1 - store everything as a value
     {
@@ -48,7 +49,7 @@ module.exports = function() {
       ".values" {
         "beep": 1,
         "boop": 2
-      } 
+      }
     }
 
     {
@@ -62,12 +63,12 @@ module.exports = function() {
         },
         "abc" : { // priority 2
           ""
-  
+
         }
       }
     }
     //query: foo
-    // bar: .value: null, .priotiy: 2
+    // bar: .value: null, .priority: 2
     {
       bar: {},
       abc:
@@ -77,19 +78,18 @@ module.exports = function() {
   */
 
 
-  // perhaps use this instead: 
+  // perhaps use this instead:
   // http://docs.mongodb.org/manual/tutorial/model-tree-structures-with-materialized-paths/
-  PersistorSchema.index({path: 1, parentPath: 1, ".priority": 1, name: 1})
+  PersistorSchema.index({path: 1, parentPath: 1, ".priority": 1, name: 1}, {unique: true})
+
+  PersistorSchema.statics.getRaw = function(key, cb) {
+    var pathArr = treeUtils.buildPathArr(key)
+    this.find({path: pathArr}).sort({".priority": 1, name: 1}).lean().exec(cb)
+  }
 
   PersistorSchema.statics.get = function(key, cb) {
-    var pathArr = key.split("/").reduce(function(arr, next) {
-      var last = arr[arr.length - 1] || ""
-      var newKey = last + "/" + next
-      arr.push(newKey)
-      return arr
-    }, [])
 
-    this.find({path: pathArr}).sort({".priority": 1, name: 1}).lean().exec(function(err, docs){
+     this.getRaw(key, function(err, docs){
       if (err) return cb(err)
       if (!docs.length) {
         return cb()
@@ -99,22 +99,41 @@ module.exports = function() {
       }
 
       var ret = treeUtils.reduceTree(docs, pathArr)
-      
+
       cb(null, ret)
 
     })
-
   }
+
   PersistorSchema.statics.set = function(key, val, priority, cb) {
+    var pathArr = treeUtils.buildPathArr(key)
 
-
+    var topKey = key.split("/").pop()
+    var docs = treeUtils.buildDocs(topKey, pathArr, val, priority)
+    async.map(docs, this.saveSingleDoc.bind(this), function(err, docs) {
+      if (err) return cb(err)
+      cb(null, treeUtils.reduceTree(docs, pathArr))
+    })
   }
+
+  PersistorSchema.statics.saveSingleDoc = function(doc, cb) {
+    this.findOneAndUpdate({path: doc.path}, doc, {upsert: true}, cb)
+  }
+
   PersistorSchema.statics.remove = function(key, cb) {
+    this.getRaw(key, function(err, docs) {
+      if (err) return cb(err)
+      if (!docs.length) return cb()
+      var ids = docs.map(function(d) {
+        return d._id
+      })
 
+      async.each(ids, this.findByIdAndRemove.bind(this), cb)
+    })
   }
 
 
-  return function PersistorThingy(connectionString, opts) {
+  return function PersistorBuilder(connectionString, opts) {
     connectionString = connectionString || "mongodb://localhost/backside"
     opts = opts || {}
     this.db = mongoose.createConnection(connectionString, opts)
