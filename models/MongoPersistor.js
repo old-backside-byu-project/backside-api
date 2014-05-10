@@ -88,14 +88,10 @@ module.exports = function() {
   }
 
   PersistorSchema.statics.get = function(key, cb) {
-
      this.getRaw(key, function(err, docs){
       if (err) return cb(err)
       if (!docs.length) {
         return cb()
-      }
-      if (docs.length === 1) {
-        return cb(null, docs[0])
       }
 
       var ret = treeUtils.reduceTree(docs, pathArr)

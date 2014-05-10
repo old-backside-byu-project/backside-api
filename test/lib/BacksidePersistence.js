@@ -38,19 +38,19 @@ describe("BacksidePersistence", function() {
 
   describe("set", function() {
     it("should be able to set a simple string key", function(done) {
-      api.set("/setString", "foo", function(err, val) {
+      api.set("/root/setString", "foo", function(err, val) {
         if (err) throw err
-        assert.equal(val, "foo")
+        assert.deepEqual(val, {value: "foo", priority: null})
         done()
       })
     })
-    it("should be able to set a tree as a key", function(err, val) {
+    it("should be able to set a tree as a key", function(done) {
       var t = {
         "foo" : "bar"
       }
-      api.set("/setTree", t, function(err, val) {
+      api.set("/root/setTree", t, function(err, val) {
         if (err) throw err
-        assert.deepEqual(val, t)
+        assert.deepEqual(val, {"foo":{"priority":null,"value":"bar"}})
         done()
       })
     })

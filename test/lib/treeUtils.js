@@ -80,7 +80,7 @@ describe("tree utils", function() {
         }
       }
 
-      var res = treeUtils.buildDocs("bar", ["/foo", "/foo/bar"], val, 1)
+      var res = treeUtils.buildDocs("bar", ["/foo"], val, 1)
       var expect = [
         {
           name: 'bar',
