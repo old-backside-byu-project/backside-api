@@ -1,6 +1,5 @@
 var container = require("../config")
-var assert = require("assert")
-var difflet = require("difflet")
+var assert = require("chai").assert
 
 var BacksidePersistence = container.get("BacksidePersistence")
 var persistor = container.get("persistor")
@@ -66,7 +65,7 @@ describe("BacksidePersistence", function() {
         done()
       })
     })
-    it("should be able to retrieve the while tree", function(done) {
+    it("should be able to retrieve most of the tree", function(done) {
       api.get("/foo/bar", function(err, result) {
         if (err) throw err
         assert.deepEqual(result, {
@@ -84,6 +83,35 @@ describe("BacksidePersistence", function() {
           },
           bat: {
             value: 4,
+            priority: 2
+          }
+        })
+        done()
+      })
+    })
+    it("should be able to retrieve the whole the tree", function(done) {
+      api.get("/foo", function(err, result) {
+        if (err) throw err
+        assert.deepEqual(result, {
+          bar: {
+            value: {
+              baz: {
+                value: {
+                  beep: {
+                    value: 1,
+                    priority: 1
+                  },
+                  boop: {
+                    value: 1,
+                    priority: 1
+                  }
+                }
+              },
+              bat: {
+                value: 4,
+                priority: 2
+              }
+            },
             priority: 1
           }
         })
