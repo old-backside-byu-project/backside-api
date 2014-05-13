@@ -7,37 +7,36 @@ var api = new BacksidePersistence(persistor)
 describe("BacksidePersistence", function() {
   before(function(done) {
     persistor.collection.drop(function(err) {
-      if (err) return done(err)
-        persistor.create([
-          {
-            name: "bar",
-            path: ["/foo", "/foo/bar"],
-            parentPath: "/foo",
-            value : null,
-            priority : 1
-          },
-          {
-            name: "beep",
-            path: ["/foo", "/foo/bar", "/foo/bar/baz", "/foo/bar/baz/beep"],
-            parentPath: "/foo/bar/baz",
-            value : 1,
-            priority : 1,
-          },
-          {
-            name: "boop",
-            path: ["/foo", "/foo/bar", "/foo/bar/baz", "/foo/bar/baz/boop"],
-            parentPath: "/foo/bar/baz",
-            value : 1,
-            priority : 1
-          },
-          {
-            name: "bat",
-            path: ["/foo", "/foo/bar", "/foo/bar/bat"],
-            parentPath: "/foo/bar",
-            value : 4,
-            priority : 2
-          }
-        ], done)
+      persistor.create([
+        {
+          name: "bar",
+          path: ["/foo", "/foo/bar"],
+          parentPath: "/foo",
+          value : null,
+          priority : 1
+        },
+        {
+          name: "beep",
+          path: ["/foo", "/foo/bar", "/foo/bar/baz", "/foo/bar/baz/beep"],
+          parentPath: "/foo/bar/baz",
+          value : 1,
+          priority : 1,
+        },
+        {
+          name: "boop",
+          path: ["/foo", "/foo/bar", "/foo/bar/baz", "/foo/bar/baz/boop"],
+          parentPath: "/foo/bar/baz",
+          value : 1,
+          priority : 1
+        },
+        {
+          name: "bat",
+          path: ["/foo", "/foo/bar", "/foo/bar/bat"],
+          parentPath: "/foo/bar",
+          value : 4,
+          priority : 2
+        }
+      ], done)
     })
   })
 
