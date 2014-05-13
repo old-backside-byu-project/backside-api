@@ -83,12 +83,13 @@ module.exports = function() {
   PersistorSchema.index({path: 1, parentPath: 1, ".priority": 1, name: 1}, {unique: true})
 
   PersistorSchema.statics.getRaw = function(key, cb) {
-    var pathArr = treeUtils.buildPathArr(key)
-    this.find({path: pathArr}).sort({".priority": 1, name: 1}).lean().exec(cb)
+    var pathEl = treeUtils.buildPathArr(key).pop()
+    this.find({path: pathEl}).sort({".priority": 1, name: 1}).lean().exec(cb)
   }
 
   PersistorSchema.statics.get = function(key, cb) {
-     this.getRaw(key, function(err, docs){
+    var pathArr = treeUtils.buildPathArr(key)
+    this.getRaw(key, function(err, docs){
       if (err) return cb(err)
       if (!docs.length) {
         return cb()

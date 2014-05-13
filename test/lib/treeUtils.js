@@ -41,8 +41,64 @@ var docs = [
 
 describe("tree utils", function() {
   describe("reduce tree", function() {
+    it("should be able to reduce a single node value", function() {
+      var res = treeUtils.reduceTree([{
+        name: "bat",
+        path: ["/foo", "/foo/bar", "/foo/bar/bat"],
+        parentPath: "/foo/bar",
+        value : 4,
+        priority : 2
+      }], ["/foo", "/foo/bar", "/foo/bar/bat"])
+      assert.deepEqual(res, {
+        value: 4,
+        priority: 2
+      })
+    })
     it("should be able to reduce docs back into a full tree", function() {
-      var res = treeUtils.reduceTree(docs.slice(0), ["/foo"])
+      var res = treeUtils.reduceTree([{
+        name: "bat",
+        path: ["/foo", "/foo/bar", "/foo/bar/bat"],
+        parentPath: "/foo/bar",
+        value : 4,
+        priority : 2
+      }], ["/foo", "/foo/bar"])
+      assert.deepEqual(res, {
+        bat: {
+          value : 4,
+          priority : 2
+        }
+      })
+    })
+    it("should be able to reduce docs back into a full tree", function() {
+      var res = treeUtils.reduceTree([
+        {
+          name: "bat",
+          path: ["/foo", "/foo/bar", "/foo/bar/bat"],
+          parentPath: "/foo/bar",
+          value : 4,
+          priority : 2
+        },
+        {
+          name: "baz",
+          path: ["/foo", "/foo/bar", "/foo/bar/baz"],
+          parentPath: "/foo/bar",
+          value : 5,
+          priority : 2
+        }], ["/foo", "/foo/bar"])
+      assert.deepEqual(res, {
+        bat: {
+          value : 4,
+          priority : 2
+        },
+        baz: {
+          value : 5,
+          priority : 2
+        }
+      })
+    })
+
+    it("should be able to reduce docs back into a full tree", function() {
+      var res = treeUtils.reduceTree(docs, ["/foo"])
       assert.deepEqual(res, {
         bar: {
           priority: 1,
@@ -69,6 +125,16 @@ describe("tree utils", function() {
     })
   })
   describe("build docs", function() {
+    it("should be able to create a doc from a single value", function() {
+      assert.deepEqual(treeUtils.buildDocs("bar", ["/foo", "/foo/bar"], "stuff", 1), [{
+        name: "bar",
+        path: ["/foo", "/foo/bar"],
+        parentPath: "/foo",
+        value: "stuff",
+        priority: 1
+      }])
+    })
+
     it("should be able to create docs from a tree", function() {
       var val = {
         "bar": { // priority 1
