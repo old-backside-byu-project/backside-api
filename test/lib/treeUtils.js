@@ -180,4 +180,12 @@ describe("tree utils", function() {
       assert.deepEqual(res, expect)
     })
   })
+
+  describe("build path", function() {
+    it("should take a string and build a path", function() {
+      assert.deepEqual(treeUtils.buildPathArr("/foo"), ["/", "/foo"])
+      assert.deepEqual(treeUtils.buildPathArr("/foo/bar/baz"), ["/", "/foo", "/foo/bar", "/foo/bar/baz"])
+      assert.deepEqual(treeUtils.buildPathArr("/"), ["/"])
+    })
+  })
 })
