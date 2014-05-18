@@ -9,8 +9,6 @@ container.register("logger", function() {
   }
 })
 
-container.register("api", function() {
-	
-})
+container.register("MONGODB_URL", "mongodb://localhost/test")
 
 module.exports = container
