@@ -2,36 +2,39 @@ var container = require("../config")
 var assert = require("chai").assert
 
 var BacksidePersistence = container.get("BacksidePersistence")
-var persistor = container.get("persistor")
+var MongoPersistor = container.get("MongoPersistor")
+var persistor = new MongoPersistor(container.get("MONGODB_URL"))
+
 var api = new BacksidePersistence(persistor)
 describe("BacksidePersistence", function() {
   before(function(done) {
     persistor.collection.drop(function(err) {
+      if (err) return done(err)
       persistor.create([
         {
           name: "bar",
-          path: ["/foo", "/foo/bar"],
+          path: ["/", "/foo", "/foo/bar"],
           parentPath: "/foo",
           value : null,
           priority : 1
         },
         {
           name: "beep",
-          path: ["/foo", "/foo/bar", "/foo/bar/baz", "/foo/bar/baz/beep"],
+          path: ["/", "/foo", "/foo/bar", "/foo/bar/baz", "/foo/bar/baz/beep"],
           parentPath: "/foo/bar/baz",
           value : 1,
           priority : 1,
         },
         {
           name: "boop",
-          path: ["/foo", "/foo/bar", "/foo/bar/baz", "/foo/bar/baz/boop"],
+          path: ["/", "/foo", "/foo/bar", "/foo/bar/baz", "/foo/bar/baz/boop"],
           parentPath: "/foo/bar/baz",
           value : 1,
           priority : 1
         },
         {
           name: "bat",
-          path: ["/foo", "/foo/bar", "/foo/bar/bat"],
+          path: ["/", "/foo", "/foo/bar", "/foo/bar/bat"],
           parentPath: "/foo/bar",
           value : 4,
           priority : 2
@@ -89,29 +92,33 @@ describe("BacksidePersistence", function() {
       })
     })
     it("should be able to retrieve the whole the tree", function(done) {
-      api.get("/foo", function(err, result) {
+      api.get("/", function(err, result) {
         if (err) throw err
         assert.deepEqual(result, {
-          bar: {
+          foo: {
             value: {
-              baz: {
+              bar: {
                 value: {
-                  beep: {
-                    value: 1,
-                    priority: 1
+                  baz: {
+                    value: {
+                      beep: {
+                        value: 1,
+                        priority: 1
+                      },
+                      boop: {
+                        value: 1,
+                        priority: 1
+                      }
+                    }
                   },
-                  boop: {
-                    value: 1,
-                    priority: 1
+                  bat: {
+                    value: 4,
+                    priority: 2
                   }
-                }
-              },
-              bat: {
-                value: 4,
-                priority: 2
+                },
+                priority: 1
               }
-            },
-            priority: 1
+            }
           }
         })
         done()
