@@ -22,6 +22,7 @@
   "dependencies": {
     "dependable": "~0.2.5",
     "winston": "~0.7.3",
+    "collections": "^1.1.0",
     "async": "~0.8.0",
     "mongoose": "~3.8.9",
     "chai": "~1.9.1",
