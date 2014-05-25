@@ -1,5 +1,5 @@
 var treeUtils = require("../../lib/treeUtils")
-var assert = require("assert")
+var assert = require("chai").assert
 var difflet = require("difflet")
 
 /*
@@ -38,6 +38,39 @@ var docs = [
   }
 ]
 
+var expandedTree = {
+  bar: {
+    priority: 1,
+    value: {
+      baz: {
+        value: {
+          beep: {
+            priority : 1,
+            value : 1
+          },
+          boop:  {
+            value : 1,
+            priority : 1
+          }
+        },
+      },
+      bat: {
+        value : 4,
+        priority : 2
+      }
+    }
+  }
+}
+
+var tree = {
+  bar: {
+    baz: {
+      beep: 1,
+      boop: 1
+    },
+    bat: 4
+  }
+}
 
 describe("tree utils", function() {
   describe("reduce tree", function() {
@@ -99,29 +132,7 @@ describe("tree utils", function() {
 
     it("should be able to reduce docs back into a full tree", function() {
       var res = treeUtils.reduceTree(docs, ["/foo"])
-      assert.deepEqual(res, {
-        bar: {
-          priority: 1,
-          value: {
-            baz: {
-              value: {
-                beep: {
-                  priority : 1,
-                  value : 1
-                },
-                boop:  {
-                  value : 1,
-                  priority : 1
-                }
-              },
-            },
-            bat: {
-              value : 4,
-              priority : 2
-            }
-          }
-        }
-      })
+      assert.deepEqual(res, expandedTree)
     })
   })
   describe("build docs", function() {
@@ -186,6 +197,12 @@ describe("tree utils", function() {
       assert.deepEqual(treeUtils.buildPathArr("/foo"), ["/", "/foo"])
       assert.deepEqual(treeUtils.buildPathArr("/foo/bar/baz"), ["/", "/foo", "/foo/bar", "/foo/bar/baz"])
       assert.deepEqual(treeUtils.buildPathArr("/"), ["/"])
+    })
+  })
+
+  describe("collapse tree", function() {
+    it("should be able collapse a value tree into normal json", function() {
+      assert.deepEqual(treeUtils.collapseTree(expandedTree), tree)
     })
   })
 })
