@@ -111,6 +111,7 @@ describe("RuleValidator", function() {
     it("should be able to validate a whole rule set successfully", function(done) {
       var rv = new RuleValidator({})
       rv.validateRuleSet(rules.rules, function(err) {
+        if (err) throw err
         assert.ifError(err)
         done()
       })
