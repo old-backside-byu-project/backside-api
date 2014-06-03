@@ -35,6 +35,7 @@ var rules = {
   }
 }
 
+
 var RuleValidator = container.get("RuleValidator")
 describe("RuleValidator", function() {
   describe("extractRules", function() {
@@ -85,7 +86,8 @@ describe("RuleValidator", function() {
       assert.equal(rc.reads[1], "$stuff.val() == 'beep'")
       assert.equal(rc.validators.length, 0)
       assert.equal(rc.scopes.length, 1)
-      assert.equal(rc.scopes[0], "$stuff")
+      assert.equal(rc.scopes[0].scope, "$stuff")
+      assert.equal(rc.scopes[0].path, "/foo/bat/twinky")
     })
     it("should be able to extract validators from the document", function() {
       // mock out persistence with simple object, it sgThouldn't be called
@@ -101,15 +103,29 @@ describe("RuleValidator", function() {
       assert.equal(rc.validators[2], "newData.isString()")
       assert.equal(rc.validators[3], "newData.isString()")
       assert.equal(rc.scopes.length, 1)
-      assert.equal(rc.scopes[0], "$user")
+      assert.equal(rc.scopes[0].scope, "$user")
+      assert.deepEqual(rc.scopes[0].path, "/users/addison")
     })
   })
-  describe("ruleCompiler", function() {
-    var util = require("util")
-    it("should compile the rule", function() {
+  describe("validate a rule set", function() {
+    it("should be able to validate a whole rule set successfully", function(done) {
       var rv = new RuleValidator({})
-      //console.log(util.inspect(rv.buildRule("root.child('users').child(auth.id).child('active').val() == true"), {depth: 8}))
-      console.log(util.inspect(rv.buildRule("newData.val() || !that"), {depth: null}))
+      rv.validateRuleSet(rules.rules, function(err) {
+        assert.ifError(err)
+        done()
+      })
+    })
+    it("should be able to detect some basic errors in rule structure", function(done) {
+      var badRules = {
+        user: {
+          "_bad" : true
+        }
+      }
+      var rv = new RuleValidator({})
+      rv.validateRuleSet(badRules, function(err) {
+        assert(err != null, "an error")
+        done()
+      })
     })
   })
 })
