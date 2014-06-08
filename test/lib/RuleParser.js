@@ -1,4 +1,3 @@
-var container = require("../config")
 var assert = require("chai").assert
 
 assert.noErrRet = function(retVal) {
@@ -13,7 +12,7 @@ assert.exErrRet = function(retVal) {
   }
 }
 
-var RuleParser = container.get("RuleParser")
+var RuleParser = require("../../lib/RuleTree/RuleParser")
 
 describe("Rule Parser", function() {
   describe("rule syntax validation", function() {

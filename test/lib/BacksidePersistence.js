@@ -127,6 +127,7 @@ var memoryPersistor = new MemoryPersistor()
           done()
         })
       })
+
       it("should be able to retrieve the whole the tree", function(done) {
         api.get("/", function(err, result) {
           if (err) throw err
@@ -160,14 +161,15 @@ var memoryPersistor = new MemoryPersistor()
           done()
         })
       })
+
       it("should give a null for a non-existent key", function(done) {
         api.get("/fakekey", function(err, result) {
           if (err) throw err
           assert.equal(result, null)
           done()
         })
-
       })
+
       it("should return an error for an illegal key", function(done) {
         // TODO: fix this
         api.get("/", function(err) {
