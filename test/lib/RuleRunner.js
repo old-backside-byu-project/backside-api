@@ -35,7 +35,7 @@ var rules = {
 }
 
 
-var RuleRunner = require("../../lib/RuleTree/RuleRunner")
+var RuleRunner = require("../../lib/ruleTree/RuleRunner")
 describe("RuleRunner", function() {
   describe("extractRules", function() {
     it("should be able to extract rules from root of the tree", function() {

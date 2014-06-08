@@ -12,7 +12,7 @@ assert.exErrRet = function(retVal) {
   }
 }
 
-var RuleParser = require("../../lib/RuleTree/RuleParser")
+var RuleParser = require("../../lib/ruleTree/RuleParser")
 
 describe("Rule Parser", function() {
   describe("rule syntax validation", function() {
