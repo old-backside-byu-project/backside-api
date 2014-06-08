@@ -179,5 +179,29 @@ describe("RuleRunner", function() {
         done()
       })
     })
+    it("should work with the patched string methods", function(done) {
+      var rv = new RuleRunner({})
+      rv.runRules("read", {rules: {_read: "'hello'.beginsWith('he') && auth.id.endsWith('me')"}}, {id: "name"}, "/foo/bar", {}, function(err, res) {
+        assert.ifError(err)
+        assert.equal(res, true)
+        done()
+      })
+    })
+    // TODO: fix this!
+    it("will fail with multiple uses of a context (TODO: fix this)", function(done) {
+      var persistMock = {
+        get: function(key, cb) {
+          cb(null, {
+            value: 2
+          })
+        }
+      }
+      var rv = new RuleRunner(persistMock)
+      rv.runRules("write", {rules: {foo: {_write: "data.child('bear').val() === 2 && data.child('baz').child('beep').val() === 1"}}}, {id: 1234}, "/foo/baz", {name: "bob"}, function(err, res) {
+        if (err) throw err
+        assert.equal(res, false)
+        done()
+      })
+    })
   })
 })
