@@ -48,6 +48,10 @@ container.register("sessionStore", function(SESSION_SECRET) {
   })
 })
 
+container.register("treeUtils", function() {
+  return require("backside-utils")
+})
+
 container.load(path.join(__dirname, "lib"))
 
 module.exports = container
