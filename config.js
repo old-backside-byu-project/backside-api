@@ -4,11 +4,13 @@ var container = dependable.container()
 var winston = require("winston")
 var session = require("express-session")
 var morgan = require("morgan")
+var MongoStore = require("backside-mongo-store")
+var UserPassAuth = require("backside-userpass-auth")
+var AMQPMessenger = require("backside-amqp-messenger")
+var RuleTreeSecurity = require("backside-ruletree-security")
 
 var defaults = {
   PORT: 5010,
-  MONGODB_URL: "mongodb://localhost/backside",
-  RABBITMQ_URL: "amqp://localhost:5672",
   SESSION_SECRET: "really bad secret"
 }
 
@@ -16,20 +18,20 @@ for (var key in defaults) {
   container.register(key, process.env[key] || defaults[key])
 }
 
-container.register("persistence", function(BacksidePersistence, MongoPersistor, MONGODB_URL) {
-  return new BacksidePersistence(new MongoPersistor(MONGODB_URL))
+container.register("persistence", function(BacksidePersistence) {
+  return new BacksidePersistence(new MongoStore)
 })
 
-container.register("messenger", function(AMQPMessenger, RABBITMQ_URL) {
-  return new AMQPMessenger(RABBITMQ_URL)
+container.register("messenger", function() {
+  return new AMQPMessenger()
 })
 
-container.register("auth", function(persistence, UserPassAuth) {
+container.register("auth", function(persistence) {
   return new UserPassAuth(persistence)
 })
 
-container.register("validator", function(RuleValidator, persistence) {
-  return new RuleValidator(persistence)
+container.register("validator", function(persistence, logger) {
+  return new RuleTreeSecurity(persistence, {logger: logger})
 })
 
 container.register("logger", function() {
@@ -46,10 +48,6 @@ container.register("sessionStore", function(SESSION_SECRET) {
     name: "sid",
     proxy: true
   })
-})
-
-container.register("treeUtils", function() {
-  return require("backside-utils")
 })
 
 container.load(path.join(__dirname, "lib"))
