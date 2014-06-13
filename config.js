@@ -18,8 +18,12 @@ for (var key in defaults) {
   container.register(key, process.env[key] || defaults[key])
 }
 
-container.register("persistence", function(BacksidePersistence) {
-  return new BacksidePersistence(new MongoStore)
+container.register("store", function() {
+  return new MongoStore()
+})
+
+container.register("persistence", function(BacksidePersistence, store) {
+  return new BacksidePersistence(store)
 })
 
 container.register("messenger", function() {
