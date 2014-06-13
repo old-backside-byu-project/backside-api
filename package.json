@@ -1,6 +1,6 @@
 {
   "name": "backside-api",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "The api for backside",
   "main": "index.js",
   "scripts": {
@@ -27,15 +27,15 @@
     "morgan": "~1.0.1",
     "express-session": "~1.2.0",
     "cookie-parser": "~1.1.0",
-    "backside-utils": "0.0.0",
-    "backside-userpass-auth": "0.0.0",
-    "backside-amqp-messenger": "0.0.1",
-    "backside-mongo-store": "0.0.1",
-    "backside-ruletree-security": "0.0.0"
+    "backside-utils": "0.0.*",
+    "backside-userpass-auth": "0.0.*",
+    "backside-amqp-messenger": "0.0.*",
+    "backside-mongo-store": "0.0.*",
+    "backside-ruletree-security": "0.0.*"
   },
   "devDependencies": {
     "mocha": "*",
-    "backside-memory-store": "0.0.0",
+    "backside-memory-store": "0.0.*",
     "chai": "~1.9.1"
   }
 }
