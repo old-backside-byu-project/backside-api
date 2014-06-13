@@ -5,25 +5,13 @@ module.exports = {
   getContainer: function() {
     return container
   },
-  initApi: function(overrideContainer, cb) {
-    if (typeof overrideContainer === "function") {
-      cb = overrideContainer
-      overrideContainer = null
-    }
-    var cont = overrideContainer || container
-    cont.resolve("api", function(api) {
-      cb(null, api)
-    })
+  getApi: function(overrideContainer) {
+    container = overrideContainer || container
+    return container.get("api")
   },
-  createServer: function(overrideContainer, cb) {
-    if (typeof overrideContainer === "function") {
-      cb = overrideContainer
-      overrideContainer = null
-    }
-    var cont = overrideContainer || container
-    cont.resolve("server", function(server) {
-      cb(null, server.createServer())
-    })
+  createServer: function(overrideContainer) {
+    container = overrideContainer || container
+    return container.get("server")
   }
 }
 
@@ -34,7 +22,7 @@ if (module === require.main) {
   }
   var server = container.get("server")
   var logger = container.get("logger")
-  var port = container.get("PORT")
+  var port = container.get("API_PORT")
   server.createServer().listen(port, function() {
     logger.log("info", "http api listening on " + port)
   })

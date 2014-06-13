@@ -10,7 +10,7 @@ var AMQPMessenger = require("backside-amqp-messenger")
 var RuleTreeSecurity = require("backside-ruletree-security")
 
 var defaults = {
-  PORT: 5010,
+  API_PORT: 5010,
   SESSION_SECRET: "really bad secret"
 }
 
