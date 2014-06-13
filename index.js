@@ -23,7 +23,7 @@ if (module === require.main) {
   var server = container.get("server")
   var logger = container.get("logger")
   var port = container.get("API_PORT")
-  server.createServer().listen(port, function() {
+  server.listen(port, function() {
     logger.log("info", "http api listening on " + port)
   })
 }
