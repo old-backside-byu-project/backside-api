@@ -116,7 +116,11 @@ describe("backside persistence - " + persistorName, function() {
       api.get("/fakekey", function(err, result) {
         if (err) throw err
         assert.equal(result, null)
-        done()
+        api.get("/totally/not/real/key", function(err, result) {
+          if (err) throw err
+          assert.equal(result, null)
+          done()
+        })
       })
     })
 
