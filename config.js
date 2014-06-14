@@ -34,7 +34,7 @@ container.register("auth", function(persistence) {
   return new UserPassAuth(persistence)
 })
 
-container.register("validator", function(persistence, logger) {
+container.register("security", function(persistence, logger) {
   return new RuleTreeSecurity(persistence, {logger: logger})
 })
 
