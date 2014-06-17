@@ -1,6 +1,6 @@
 {
   "name": "backside-api",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "The api for backside",
   "main": "index.js",
   "scripts": {
@@ -34,7 +34,8 @@
     "backside-userpass-auth": "0.0.*",
     "backside-amqp-messenger": "0.0.*",
     "backside-mongo-store": "0.0.*",
-    "backside-ruletree-security": "0.0.*"
+    "backside-ruletree-security": "0.0.*",
+    "cuid": "~1.2.4"
   },
   "devDependencies": {
     "mocha": "*",
